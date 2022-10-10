@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.dimvvm.model.PlayerResult
 import com.example.dimvvm.network.PlayerDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -37,18 +38,24 @@ class PlayersDataViewModel @Inject constructor(
                 .flowOn(Dispatchers.IO)
                 .catch { exception ->
                     _playersStateData.value = PlayerResult.Error(exception.message!!)
-                    playersRepository.getPlayersList()
-                        .flowOn(Dispatchers.IO)
-                        .catch { ext ->
-                            _playersStateData.value = PlayerResult.Error(ext.message!!)
-                        }.collect {
-                            _playersStateData.value = PlayerResult.Success(it)
-                        }
+                    trigerDataFromLocalDB(viewModelScope)
                 }
                 .collect {
                     _playersStateData.value = PlayerResult.Success(it.data)
                 }
 
+        }
+    }
+
+    fun trigerDataFromLocalDB(scope: CoroutineScope) {
+        scope.launch {
+            playersRepository.getPlayersList()
+                .flowOn(Dispatchers.IO)
+                .catch { ext ->
+                    _playersStateData.value = PlayerResult.Error(ext.message!!)
+                }.collect {
+                    _playersStateData.value = PlayerResult.Success(it)
+                }
         }
     }
 }
