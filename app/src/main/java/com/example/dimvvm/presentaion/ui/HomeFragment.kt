@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -53,13 +54,14 @@ class HomeFragment : BaseFragment() {
                 playersModel.playersStateData.collect { playesResult ->
                     when (playesResult) {
                         is PlayerResult.Success -> {
-                            playerListAdapter.setUpData(playesResult.playesrData.data)
-                            SavedDataForDetails.setUpData(playesResult.playesrData.data)
+                            playerListAdapter.setUpData(playesResult.playersList)
+                            SavedDataForDetails.setUpData(playesResult.playersList)
                             playerListAdapter.notifyDataSetChanged()
                             progressIndicator.visibility = View.GONE
                             recyclerView.visibility = View.VISIBLE
                         }
                         is PlayerResult.Error -> {
+                            Toast.makeText(activity, "Date from local DB", Toast.LENGTH_LONG).show()
                             println("Error : ${playesResult.errorMsg}")
                             progressIndicator.visibility = View.GONE
                         }

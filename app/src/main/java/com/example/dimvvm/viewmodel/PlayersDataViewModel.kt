@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,13 +27,28 @@ class PlayersDataViewModel @Inject constructor(
         viewModelScope.launch {
             _playersStateData.value = PlayerResult.Loading
             playersRepository.getPlayersData()
+                .map {
+                    it.data.filter {
+                        playersRepository.insertData(it)
+                        it != null
+                    }
+                    it
+                }
                 .flowOn(Dispatchers.IO)
                 .catch { exception ->
                     _playersStateData.value = PlayerResult.Error(exception.message!!)
+                    playersRepository.getPlayersList()
+                        .flowOn(Dispatchers.IO)
+                        .catch { ext ->
+                            _playersStateData.value = PlayerResult.Error(ext.message!!)
+                        }.collect {
+                            _playersStateData.value = PlayerResult.Success(it)
+                        }
                 }
-                .collect { pData ->
-                    _playersStateData.value = PlayerResult.Success(pData)
+                .collect {
+                    _playersStateData.value = PlayerResult.Success(it.data)
                 }
+
         }
     }
 }
