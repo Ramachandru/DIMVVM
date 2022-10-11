@@ -38,17 +38,16 @@ class PlayersDataViewModel @Inject constructor(
                 .flowOn(Dispatchers.IO)
                 .catch { exception ->
                     _playersStateData.value = PlayerResult.Error(exception.message!!)
-                    trigerDataFromLocalDB(viewModelScope)
+                    viewModelScope.trigerDataFromLocalDB()
                 }
                 .collect {
                     _playersStateData.value = PlayerResult.Success(it.data)
                 }
-
         }
     }
 
-    fun trigerDataFromLocalDB(scope: CoroutineScope) {
-        scope.launch {
+    fun CoroutineScope.trigerDataFromLocalDB() {
+        this.launch {
             playersRepository.getPlayersList()
                 .flowOn(Dispatchers.IO)
                 .catch { ext ->

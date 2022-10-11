@@ -8,7 +8,7 @@ interface PlayerListDao {
     @Query("Select * from playerlist")
     fun getPlayerList(): List<PlayersList>
 
-    @Insert (onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(player: PlayersList)
 
     @Delete

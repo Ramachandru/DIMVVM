@@ -16,9 +16,9 @@ import javax.inject.Singleton
 object DBModule {
     @Provides
     @Singleton
-    fun getDBInstance(@ApplicationContext context: Context): AppDatabase {
+    fun getDBInstance(@ApplicationContext AppContext: Context): AppDatabase {
         return Room.databaseBuilder(
-            context,
+            AppContext,
             AppDatabase::class.java,
             "Players"
         )
