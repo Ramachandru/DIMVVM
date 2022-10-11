@@ -2,6 +2,7 @@ package com.example.dimvvm.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 data class PlayersData(
@@ -10,9 +11,17 @@ data class PlayersData(
     val data: List<PlayersList>
 )
 
-@Entity(tableName = "playerlist")
+@Entity(
+    tableName = "playerlist",
+    /*foreignKeys = [ForeignKey(
+        entity = PlayersData::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("auth_id"),
+        onDelete = ForeignKey.CASCADE
+    )]*/
+)
 data class PlayersList(
-    @PrimaryKey(autoGenerate = true )
+    @PrimaryKey(autoGenerate = true)
     var id: Int,
     @ColumnInfo(name = "name")
     val name: String,
