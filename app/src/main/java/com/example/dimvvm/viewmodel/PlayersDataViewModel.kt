@@ -31,7 +31,7 @@ class PlayersDataViewModel @Inject constructor(
                 .map {
                     it.data.filter {
                         playersRepository.insertData(it)
-                        it != null
+                        true
                     }
                     it
                 }

@@ -40,7 +40,7 @@ class HomeFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.player_list, container, false)
+        val view = inflater.inflate(R.layout.player_list, container, false)
         return view
     }
 
@@ -76,7 +76,7 @@ class HomeFragment : BaseFragment() {
     }
 
     fun initialSetupUi() {
-        var linearLayoutManager = LinearLayoutManager(activity)
+        val linearLayoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = linearLayoutManager
         playerListAdapter.setUpData(emptyList())
         recyclerView.adapter = playerListAdapter
